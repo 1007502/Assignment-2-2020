@@ -25,11 +25,22 @@ COPY jsinspect jsinspect
 
 RUN npm install -g ./jsinspect
 
+RUN pip install matplotlib
+
 # Increase the amount of memory nodejs can allocate, this
 # prevents JsInspect from running into the GC issues. 
 ENV NODE_OPTIONS=--max-old-space-size=4000
 
 WORKDIR /usr/jquery-data
+
+COPY static_commands.py static_commands.py
+
+RUN mkdir jsinspect
+RUN mkdir cloc
+
+RUN python static_commands.py
+
+COPY coverage_calculator.py coverage_calculator.py
 
 # Open a bash prompt, such that you can execute commands 
 # such as `cloc`. 
