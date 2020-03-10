@@ -44,4 +44,4 @@ COPY coverage_calculator.py coverage_calculator.py
 
 # Open a bash prompt, such that you can execute commands 
 # such as `cloc`. 
-ENTRYPOINT ["bash"]
+CMD python coverage_calculator.py
