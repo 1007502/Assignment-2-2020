@@ -7,6 +7,7 @@ from os.path import isfile, join
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas
 
 path = "/usr/jquery-data/jsinspect"
 onlyfiles = sorted([f for f in listdir(path) if isfile(join(path, f))])
@@ -14,6 +15,8 @@ onlyfiles = sorted([f for f in listdir(path) if isfile(join(path, f))])
 previousVersion = ""
 labels = []
 values_list = []
+loc_versions = []
+counter = 0
 
 for file in onlyfiles:
     version1 = file.split(".json")[0].split("-")[0]
@@ -47,11 +50,17 @@ for file in onlyfiles:
     value = 2*coverage/(loc1 + loc2)
 
     if previousVersion != version1:
+        loc_versions += [loc1]
+        counter += 1
         labels += [version1]
         values_list += [[value]]
         previousVersion = version1
     else:
         values_list[-1] += [value]
+
+loc_file = json.load(open(f"/usr/jquery-data/cloc/3.4.1.json"))
+loc = loc_file["JavaScript"]["blank"] + loc_file["JavaScript"]["comment"] + loc_file["JavaScript"]["code"]
+loc_versions += [loc]
 
 values_list += [[]]
 
@@ -79,9 +88,19 @@ plt.colorbar(im)
 plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
          rotation_mode="anchor")
 
-
 plt.show()
 plt.tight_layout()
 plt.savefig("/out/test.pdf")
 
-# print(values_list)
+df = pandas.DataFrame({
+    'Versions': labels,
+    'Loc': loc_versions
+})
+df = df.set_index('Versions')
+ax = df.plot(kind='bar')
+
+plt.gcf().set_size_inches(20, 20)  # Rotate the tick labels and set their alignment.
+
+plt.show()
+plt.tight_layout()
+plt.savefig("/out/bar.pdf")
