@@ -53,23 +53,16 @@ for file in onlyfiles:
     else:
         values_list[-1] += [value]
 
+values_list += [[]]
+
 labels += ["3.4.1"]
-length = len(labels) - 1
+length = len(labels)
 for i in range(len(values_list)):
-    x_values: list = values_list[i]
-    for j in range(length - len(x_values)):
-        x_values.insert(0, 0.0)
-    x_values.insert(0, 0.0)
-    # x_values = list(reversed(x_values))
-
-values_list += [[0.0 for _ in range(len(labels))]]
-
-# values_list = list(reversed(values_list))
-print(values_list)
+    values_list[i].insert(0, 1.0)
+    for j in range(length - len(values_list[i])):
+        values_list[i].insert(0, 0.0)
 
 array = np.transpose(np.array(values_list))
-# array = np.array([[14, 345],
-#                   [45, 67]])
 fig, ax = plt.subplots()
 fig.set_size_inches(20, 20)
 im = ax.imshow(array)
@@ -89,6 +82,6 @@ plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
 
 plt.show()
 plt.tight_layout()
-plt.savefig("/out/test.png")
+plt.savefig("/out/test.pdf")
 
-print(values_list)
+# print(values_list)
